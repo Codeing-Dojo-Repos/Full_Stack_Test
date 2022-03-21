@@ -9,5 +9,5 @@ module.exports= (app) => {
 
     app.delete('/api/movies/:_id', MovieController.deleteMovie)
 
-    app.put('/api/movies/:_id', MovieController.updateModie)
+    app.put('/api/movies/:_id', MovieController.updateMovie)
 }

@@ -32,7 +32,7 @@ module.exports = {
     },
 
     findMovieById: (req,res) => {
-        console.log('inside getAllJokes')
+        console.log('inside findMovieById')
     
         MovieModel.findOne({_id:req.params._id})
             .then( (movieObj) => {
@@ -62,7 +62,7 @@ module.exports = {
             })
     },
 
-    updateModie: (req, res) => {
+    updateMovie: (req, res) => {
         MovieModel.findOneAndUpdate({_id:req.params._id},
             req.body,
             {new:true, runValidators:true}
