@@ -1,14 +1,10 @@
 import React, {useState, useEffect} from 'react'
-import {Link, useNavigate} from 'react-router-dom'
+import {Link, useParams, useNavigate} from 'react-router-dom'
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
 
 
-const NewMovie = props => {
+const EditMovie = props => {
 
-    const navigate = useNavigate()
-
-    
     const [title, setTitle] = useState('')
     const [genre, setGenre] = useState('')
     const [boxArt, setBoxArt] = useState('')
@@ -18,49 +14,56 @@ const NewMovie = props => {
     const [kidFriendly, setKidFriendly] = useState(false)
     const [yearReleased, setYearReleased] = useState(0)
 
-    const [errors, setErrors] = useState([])
+    const {id} = useParams()
+    const navigate = useNavigate()
+
+    useEffect( () => {
+        axios.get(`http://localhost:8000/api/movies/${id}`)
+        .then(res=>{
+            console.log(res.data)
+            setTitle(res.data.title)
+            setGenre(res.data.genre)
+            setBoxArt(res.data.boxArt)
+            setWatchlength(res.data.watchlength)
+            setRating(res.data.rating)
+            setActors(res.data.actors)
+            setKidFriendly(res.data.kidFriendly)
+            setYearReleased(res.data.yearReleased)
+        })
+        .catch(err => {console.log(err)})
+    }, [])
 
     const submitHandler = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:8000/api/movies',
-        {title, genre, boxArt, watchlength, rating, actors, kidFriendly, yearReleased})
+        axios.put(`http://localhost:8000/api/movies/${id}`,
+            {title, genre, boxArt, watchlength, rating, actors, kidFriendly, yearReleased})
         .then( res => {
             console.log(res.data)
             navigate('/')
         })
-        .catch(err => {
-            console.log(err)
-            console.log(err.response.data.errors)
-            setErrors(err.response.data.errors)
-        })
+        .catch(err => {console.log(err)})
+
+        // setTitle('')
+        // setGenre('')
+        // setBoxArt('')
+        // setWatchlength(0)
     }
 
 
     return(
         <div>
+            EditMovie
             <Link to={'/'}>Return home</Link>
-            
+
             <form onSubmit={submitHandler}>
                 <div>
                     <label>Title:</label>
                     <input value={title} onChange={ (e) => setTitle(e.target.value)} type='text'/>
-                    <br/>
-                    {
-                        errors.title ?
-                        <span>{errors.title.message}</span>
-                        :null
-                    }
                 </div>
 
                 <div>
                     <label>Year Released:</label>
                     <input value={yearReleased} onChange={ (e) => setYearReleased(e.target.value)} type='number'/>
-                    <br/>
-                    {
-                        errors.yearReleased ?
-                        <span>{errors.yearReleased.message}</span>
-                        :null
-                    }
                 </div>
 
                 <div>
@@ -77,34 +80,16 @@ const NewMovie = props => {
                         <option value="Thriller">Thriller</option>
                         <option value="Animated">Animated</option>
                     </select>
-                    <br/>
-                    {
-                        errors.genre ?
-                        <span>{errors.genre.message}</span>
-                        :null
-                    }
                 </div>
 
                 <div>
                     <label>boxart:</label>
                     <input value={boxArt} onChange={ (e) => setBoxArt(e.target.value)} type='text'/>
-                    <br/>
-                    {
-                        errors.boxArt ?
-                        <span>{errors.boxArt.message}</span>
-                        :null
-                    }
                 </div>
 
                 <div>
                     <label>watchlength: </label>
                     <input value={watchlength} onChange={ (e) => setWatchlength(e.target.value)} type='number'/>
-                    <br/>
-                    {
-                        errors.watchlength ?
-                        <span>{errors.watchlength.message}</span>
-                        :null
-                    }
                 </div>
 
                 <div>
@@ -117,40 +102,25 @@ const NewMovie = props => {
                         <option value="R">R</option>
                         <option value="NC-17">NC-17</option>
                     </select>
-                    <br/>
-                    {
-                        errors.rating ?
-                        <span>{errors.rating.message}</span>
-                        :null
-                    }
                 </div>
 
                 <div>
                     <label>Actor:</label>
                     <input value={actors} onChange={ (e) => setActors(e.target.value)} type='text'/>
-                    <br/>
-                    {
-                        errors.actors ?
-                        <span>{errors.actors.message}</span>
-                        :null
-                    }
                 </div>
 
                 <div>
                     <label>kidFriendly:</label>
                     <input checked={kidFriendly} onChange={ (e) => setKidFriendly(e.target.checked)} type='checkbox'/>
-                    <br/>
-                    {
-                        errors.kidFriendly ?
-                        <span>{errors.kidFriendly.message}</span>
-                        :null
-                    }
                 </div>
 
                 <button>Add movie</button>
 
             </form>
+
+
+
         </div>
     )
 }
-export default NewMovie
+export default EditMovie
