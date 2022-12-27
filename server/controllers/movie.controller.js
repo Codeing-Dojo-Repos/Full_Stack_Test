@@ -19,7 +19,8 @@ module.exports = {
 
     createMovie: (req,res) => {
         console.log('inside createMovie')
-    
+        console.log(req.body)
+
         MovieModel.create(req.body)
             .then( (movieObj) => {
                 console.log('Great Success! Movie written')

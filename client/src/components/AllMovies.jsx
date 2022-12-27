@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import axios from 'axios'
+import Header from './Header'
+import DeleteButton from './DeleteButton'
 
 
 const AllMovies = props => {
@@ -32,14 +34,18 @@ const AllMovies = props => {
 
     return(
         <div>
-            <h2>Movie Mania</h2>
-            <Link to={'/new'}>Add New Movie</Link>
+            <Header titleText = {'Movies'}
+                    link={'/new'}
+                    linkText={'Add new movie'}
+            />
+
             {
                 movieList.map( (m, index) => (
                     <div key={m._id}>
                         <p><Link to={`/movie/${m._id}`}>{m.title}</Link></p>
                         <img width="50" src={m.boxArt} alt="img" style={{ width:"120px", height:"180px"}}/>
-                        <button onClick={()=>deleteMovie(m._id)}>Delete</button>
+                        {/* <button onClick={()=>deleteMovie(m._id)}>Delete</button> */}
+                        <DeleteButton deleteHandler={()=>deleteMovie(m._id)} />
                         <Link to={`/movie/edit/${m._id}`}>Edit Movie</Link>
                     </div>
                 ))

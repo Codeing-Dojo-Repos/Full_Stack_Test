@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import {Link, useParams, useNavigate} from 'react-router-dom'
 import axios from 'axios'
+import Header from './Header'
+import DeleteButton from './DeleteButton'
 
 const OneMovie = props => {
 
@@ -28,8 +30,13 @@ const OneMovie = props => {
 
     return(
         <div>
-            <h2>{movie.title}</h2>
-            <Link to={'/'}>Return Home</Link>
+            <Header titleText = {movie.title}
+                    link={'/'}
+                    linkText={'Return home'}
+            />
+
+            {/* <h2>{movie.title}</h2>
+            <Link to={'/'}>Return Home</Link> */}
 
             <p>{movie.genre}</p>
             <p> <img src={movie.boxArt} alt="" style={{ width:"120px", height:"180px"}} /> </p>
@@ -38,7 +45,8 @@ const OneMovie = props => {
             <p>{movie.actors}</p>
             <p>{movie.kidFriendly}</p>
             <p>{movie.yearReleased}</p>
-            <button onClick={deleteMovie}>Delete</button>
+            {/* <button onClick={deleteMovie}>Delete</button> */}
+            <DeleteButton deleteHandler={deleteMovie}/>
         </div>
     )
 }

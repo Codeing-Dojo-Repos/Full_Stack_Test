@@ -1,47 +1,67 @@
 import React, {useState, useEffect} from 'react'
 import {Link, useParams, useNavigate} from 'react-router-dom'
 import axios from 'axios'
-
+import Header from './Header'
+import Form from './Form'
 
 const EditMovie = props => {
 
-    const [title, setTitle] = useState('')
-    const [genre, setGenre] = useState('')
-    const [boxArt, setBoxArt] = useState('')
-    const [watchlength, setWatchlength] = useState(0)
-    const [rating, setRating] = useState('')
-    const [actors, setActors] = useState('')
-    const [kidFriendly, setKidFriendly] = useState(false)
-    const [yearReleased, setYearReleased] = useState(0)
+    // const [title, setTitle] = useState('')
+    // const [genre, setGenre] = useState('')
+    // const [boxArt, setBoxArt] = useState('')
+    // const [watchlength, setWatchlength] = useState(0)
+    // const [rating, setRating] = useState('')
+    // const [actors, setActors] = useState('')
+    // const [kidFriendly, setKidFriendly] = useState(false)
+    // const [yearReleased, setYearReleased] = useState(0)
+
+    const [editMovie, setEditMovie] = useState({
+        title: "",
+        genre: "",
+        boxArt: "",
+        watchlength: "",
+        rating: "",
+        actors: "",
+        kidFriendly: false,
+        yearReleased: ""
+    })
 
     const {id} = useParams()
+    const [errors, setErrors] = useState([])
     const navigate = useNavigate()
 
     useEffect( () => {
         axios.get(`http://localhost:8000/api/movies/${id}`)
         .then(res=>{
-            console.log(res.data)
-            setTitle(res.data.title)
-            setGenre(res.data.genre)
-            setBoxArt(res.data.boxArt)
-            setWatchlength(res.data.watchlength)
-            setRating(res.data.rating)
-            setActors(res.data.actors)
-            setKidFriendly(res.data.kidFriendly)
-            setYearReleased(res.data.yearReleased)
+            // console.log(res.data)
+            // setTitle(res.data.title)
+            // setGenre(res.data.genre)
+            // setBoxArt(res.data.boxArt)
+            // setWatchlength(res.data.watchlength)
+            // setRating(res.data.rating)
+            // setActors(res.data.actors)
+            // setKidFriendly(res.data.kidFriendly)
+            // setYearReleased(res.data.yearReleased)
+            setEditMovie(res.data)
         })
         .catch(err => {console.log(err)})
     }, [])
 
-    const submitHandler = (e) => {
+    const editSubmitHandler = (e) => {
         e.preventDefault()
         axios.put(`http://localhost:8000/api/movies/${id}`,
-            {title, genre, boxArt, watchlength, rating, actors, kidFriendly, yearReleased})
+            //{title, genre, boxArt, watchlength, rating, actors, kidFriendly, yearReleased}
+            editMovie
+        )
         .then( res => {
             console.log(res.data)
             navigate('/')
         })
-        .catch(err => {console.log(err)})
+        .catch( err => {
+            console.log(err)
+            console.log(err.response.data.errors)
+            setErrors(err.response.data.errors)
+        })
 
         // setTitle('')
         // setGenre('')
@@ -49,13 +69,36 @@ const EditMovie = props => {
         // setWatchlength(0)
     }
 
+    const changeMovieHandler = (e) => {
+        const newStateObject = {...editMovie}
+
+        if (e.target.name === "kidFriendly"){
+            newStateObject[e.target.name] = e.target.checked
+            setEditMovie(newStateObject)
+        }
+        else{
+            newStateObject[e.target.name] = e.target.value
+            setEditMovie(newStateObject)
+        }
+        
+    }
 
     return(
         <div>
-            EditMovie
-            <Link to={'/'}>Return home</Link>
+            <Header titleText = {'Edit Movie'}
+                    link={'/'}
+                    linkText={'Return home'}
+            />
 
-            <form onSubmit={submitHandler}>
+            <Form 
+                submitHandler = {editSubmitHandler}
+                movie = {editMovie}
+                errors = {errors}
+                buttonText = {"Edit Movie"}
+                changeMovieHandler = {changeMovieHandler}
+            />
+
+            {/* <form onSubmit={submitHandler}>
                 <div>
                     <label>Title:</label>
                     <input value={title} onChange={ (e) => setTitle(e.target.value)} type='text'/>
@@ -116,10 +159,7 @@ const EditMovie = props => {
 
                 <button>Add movie</button>
 
-            </form>
-
-
-
+            </form> */}
         </div>
     )
 }

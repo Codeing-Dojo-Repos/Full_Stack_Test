@@ -1,89 +1,16 @@
-import React, {useState, useEffect} from 'react'
-import {Link, useNavigate} from 'react-router-dom'
-import axios from 'axios'
-import Header from './Header'
-import Form from './Form'
-import { useParams } from 'react-router-dom'
+import React from "react"
 
+const Form = (props) => {
 
-const NewMovie = props => {
+    const {submitHandler, changeMovieHandler, movie, errors, buttonText} = props
 
-    const navigate = useNavigate()
-
-    // const [title, setTitle] = useState('')
-    // const [genre, setGenre] = useState('')
-    // const [boxArt, setBoxArt] = useState('')
-    // const [watchlength, setWatchlength] = useState(0)
-    // const [rating, setRating] = useState('')
-    // const [actors, setActors] = useState('')
-    // const [kidFriendly, setKidFriendly] = useState(false)
-    // const [yearReleased, setYearReleased] = useState(0)
-
-    const [newMovie, setNewMovie] = useState({
-        title: "",
-        genre: "",
-        boxArt: "",
-        watchlength: "",
-        rating: "",
-        actors: "",
-        kidFriendly: false,
-        yearReleased: ""
-    })
-
-    const changeMovieHandler = (e) => {
-        const newStateObject = {...newMovie}
-
-        if (e.target.name === "kidFriendly"){
-            newStateObject[e.target.name] = e.target.checked
-            setNewMovie(newStateObject)
-        }
-        else{
-            newStateObject[e.target.name] = e.target.value
-            setNewMovie(newStateObject)
-        }
-        
-    }
-
-
-    const [errors, setErrors] = useState([])
-
-    const newSubmitHandler = (e) => {
-        e.preventDefault()
-        axios.post('http://localhost:8000/api/movies',
-        //{title, genre, boxArt, watchlength, rating, actors, kidFriendly, yearReleased}
-        newMovie
-        )
-        .then( res => {
-            console.log(res.data)
-            navigate('/')
-        })
-        .catch(err => {
-            console.log(err)
-            console.log(err.response.data.errors)
-            setErrors(err.response.data.errors)
-        })
-    }
-
-
-    return(
+    return (
         <div>
-            <Header titleText = {'New Movie'}
-                    link={'/'}
-                    linkText={'Return home'}
-            />
+            <form onSubmit={submitHandler}>
 
-            <Form 
-                submitHandler = {newSubmitHandler}
-                movie = {newMovie}
-                errors = {errors}
-                buttonText = {"Add Movie"}
-                changeMovieHandler = {changeMovieHandler}
-            />
-            
-            {/* <form onSubmit={submitHandler}>
                 <div>
                     <label>Title:</label>
-                    <input name="title" value={newMovie.title} onChange={ (e) => changeMovieHandler(e)} type='text'/>
+                    <input name="title" value={movie.title} onChange={ (e) => changeMovieHandler(e)} type='text'/>
                     <br/>
                     {
                         errors.title ?
@@ -94,7 +21,7 @@ const NewMovie = props => {
 
                 <div>
                     <label>Year Released:</label>
-                    <input name="yearReleased" value={newMovie.yearReleased} onChange={ (e) => changeMovieHandler(e)} type='number'/>
+                    <input name="yearReleased" value={movie.yearReleased} onChange={ (e) => changeMovieHandler(e)} type='number'/>
                     <br/>
                     {
                         errors.yearReleased ?
@@ -105,7 +32,7 @@ const NewMovie = props => {
 
                 <div>
                     <label>genre: </label>
-                    <select name="genre" value={newMovie.genre} onChange={ (e) => changeMovieHandler(e)}>
+                    <select name="genre" value={movie.genre} onChange={ (e) => changeMovieHandler(e)}>
                         <option defaultValue hidden>Select</option>
                         <option value="Crime Noir">Crime Noir</option>
                         <option value="Romcom">Romcom</option>
@@ -127,7 +54,7 @@ const NewMovie = props => {
 
                 <div>
                     <label>boxart:</label>
-                    <input name="boxArt" value={newMovie.boxArt} onChange={ (e) => changeMovieHandler(e)} type='text'/>
+                    <input name="boxArt" value={movie.boxArt} onChange={ (e) => changeMovieHandler(e)} type='text'/>
                     <br/>
                     {
                         errors.boxArt ?
@@ -138,7 +65,7 @@ const NewMovie = props => {
 
                 <div>
                     <label>watchlength: </label>
-                    <input name="watchlength" value={newMovie.watchlength} onChange={ (e) => changeMovieHandler(e)} type='number'/>
+                    <input name="watchlength" value={movie.watchlength} onChange={ (e) => changeMovieHandler(e)} type='number'/>
                     <br/>
                     {
                         errors.watchlength ?
@@ -149,7 +76,7 @@ const NewMovie = props => {
 
                 <div>
                     <label>rating: </label>
-                    <select name="rating" value={newMovie.rating} onChange={ (e) => changeMovieHandler(e)}>
+                    <select name="rating" value={movie.rating} onChange={ (e) => changeMovieHandler(e)}>
                         <option defaultValue hidden>Select</option>
                         <option value="G">G</option>
                         <option value="PG">PG</option>
@@ -167,7 +94,7 @@ const NewMovie = props => {
 
                 <div>
                     <label>Actor:</label>
-                    <input name="actors" value={newMovie.actors} onChange={ (e) => changeMovieHandler(e)} type='text'/>
+                    <input name="actors" value={movie.actors} onChange={ (e) => changeMovieHandler(e)} type='text'/>
                     <br/>
                     {
                         errors.actors ?
@@ -178,7 +105,7 @@ const NewMovie = props => {
 
                 <div>
                     <label>kidFriendly:</label>
-                    <input name="kidFriendly" checked={newMovie.kidFriendly} onChange={ (e) => changeMovieHandler(e)} type='checkbox'/>
+                    <input name="kidFriendly" checked={movie.kidFriendly} onChange={ (e) => changeMovieHandler(e)} type='checkbox'/>
                     <br/>
                     {
                         errors.kidFriendly ?
@@ -187,10 +114,11 @@ const NewMovie = props => {
                     }
                 </div>
 
-                <button>Add movie</button>
+                <button>{buttonText}</button>
 
-            </form> */}
+            </form>
         </div>
     )
 }
-export default NewMovie
+
+export default Form
